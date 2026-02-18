@@ -39,13 +39,6 @@ async function seed() {
     await client.connect();
     console.log("  🔌 Connected to database");
 
-    // ─── Clear existing data (order matters for FK) ───
-    await client.query("DELETE FROM products");
-    await client.query("DELETE FROM sellers");
-    await client.query("DELETE FROM customers");
-    await client.query("DELETE FROM warehouses");
-    console.log("  🧹 Cleared existing data");
-
     // ─── Seed Customers (8 Kirana Stores) ─────────────
     await client.query(`
       INSERT INTO customers (id, name, phone, email, address, city, latitude, longitude) VALUES
@@ -57,8 +50,9 @@ async function seed() {
         ('Cust-128', 'Pune Fresh Store', '9022334455', 'punefresh@email.com', '12 FC Road, Deccan', 'Pune', 18.516726, 73.856255),
         ('Cust-129', 'Hyderabad Bazaar', '9666778899', 'hydbazaar@email.com', '34 Begumpet', 'Hyderabad', 17.443713, 78.348448),
         ('Cust-130', 'Jaipur General Store', '9414556677', 'jaipurgs@email.com', '78 MI Road', 'Jaipur', 26.912434, 75.787271)
+      ON CONFLICT (id) DO NOTHING
     `);
-    console.log("  ✅ 8 customers seeded");
+    console.log("  ✅ Customers check complete");
 
     // ─── Seed Sellers (5 companies) ───────────────────
     await client.query(`
@@ -68,8 +62,9 @@ async function seed() {
         (3, 'Sweet Sugar Mills', 'Amit Patel', '9876003003', 'sugar@business.com', 'Sugar Mill Road', 'Kolhapur', 16.705120, 74.243464),
         (4, 'Britannia Foods Ltd', 'Priya Sharma', '9876004004', 'britannia@business.com', 'Whitefield Industrial Estate', 'Bangalore', 12.983800, 77.726600),
         (5, 'Unilever India Ltd', 'Vikram Singh', '9876005005', 'unilever@business.com', 'Andheri East Business District', 'Mumbai', 19.119760, 72.846580)
+      ON CONFLICT (id) DO NOTHING
     `);
-    console.log("  ✅ 5 sellers seeded");
+    console.log("  ✅ Sellers check complete");
 
     // ─── Seed Products (10 items) ─────────────────────
     await client.query(`
@@ -83,9 +78,10 @@ async function seed() {
         (7, 4, 'Good Day Biscuits 600g', 'Butter cookies pack', 85.00, 0.600, 20.00, 15.00, 5.00, 'Snacks', 'BRI-GDA-600'),
         (8, 5, 'Sunflower Oil 5L', 'Refined sunflower cooking oil', 620.00, 5.000, 30.00, 15.00, 30.00, 'Oils', 'UNI-OIL-5L'),
         (9, 2, 'Toor Dal 5Kg', 'Premium yellow lentils', 450.00, 5.000, 50.00, 40.00, 20.00, 'Pulses', 'RICE-DAL-5K'),
-        (10, 3, 'Jaggery Block 2Kg', 'Organic jaggery block', 120.00, 2.000, 20.00, 15.00, 10.00, 'Sweeteners', 'SUG-JAG-2K')
+        (10,3, 'Jaggery Block 2Kg', 'Organic jaggery block', 120.00, 2.000, 20.00, 15.00, 10.00,  'Sweeteners', 'SUG-JAG-2K')
+      ON CONFLICT (id) DO NOTHING
     `);
-    console.log("  ✅ 10 products seeded");
+    console.log("  ✅ Products check complete");
 
     // ─── Seed Warehouses (5 locations) ────────────────
     await client.query(`
@@ -95,8 +91,9 @@ async function seed() {
         ('WH-DEL-001', 'Delhi NCR Warehouse', 'Sector 63, Noida', 'Delhi', 28.627100, 77.376800, 60000),
         ('WH-CHN-001', 'Chennai Logistics Hub', 'Ambattur Industrial Estate', 'Chennai', 13.098600, 80.155200, 45000),
         ('WH-HYD-001', 'Hyderabad Mega Warehouse', 'Shamshabad Logistics Park', 'Hyderabad', 17.240263, 78.429385, 55000)
+      ON CONFLICT (id) DO NOTHING
     `);
-    console.log("  ✅ 5 warehouses seeded");
+    console.log("  ✅ Warehouses check complete");
 
     console.log("\n✅ Database seeded successfully!");
   } catch (error: any) {

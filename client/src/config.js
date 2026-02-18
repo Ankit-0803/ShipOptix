@@ -5,4 +5,4 @@
  * - Local Development: "" (uses Vite proxy to localhost:3000)
  * - Vercel Production: "https://your-backend.onrender.com"
  */
-export const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+export const API_BASE_URL = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
