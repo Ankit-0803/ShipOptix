@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../config";
 
 /**
  * Shipping Charge Calculator Form
@@ -23,7 +24,7 @@ function ShippingCharge({ warehouses, customers, products }) {
             const params = new URLSearchParams({
                 warehouseId, customerId, productId, deliverySpeed,
             });
-            const res = await fetch(`/api/v1/shipping-charge?${params}`);
+            const res = await fetch(`${API_BASE_URL}/api/v1/shipping-charge?${params}`);
             const data = await res.json();
 
             if (!res.ok) {

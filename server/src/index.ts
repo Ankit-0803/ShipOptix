@@ -11,7 +11,7 @@
  *   - Zod request validation
  *   - CORS enabled
  */
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import warehouseRoutes from "./routes/warehouse.routes.js";
@@ -31,7 +31,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ─── Health Check ────────────────────────────────
-app.get("/api/health", (_req, res) => {
+app.get("/api/health", (_req: Request, res: Response) => {
     res.json({
         status: "ok",
         service: "B2B Shipping Charge Estimator",
@@ -46,7 +46,7 @@ app.use("/api/v1/shipping-charge", shippingRoutes);  // Shipping calculations
 app.use("/api/v1", entityRoutes);                     // Entity listings
 
 // ─── 404 Handler ─────────────────────────────────
-app.use((_req, res) => {
+app.use((_req: Request, res: Response) => {
     res.status(404).json({
         error: true,
         message: "Endpoint not found",

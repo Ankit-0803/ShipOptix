@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../config";
 
 /**
  * Combined Calculator Form
@@ -26,7 +27,7 @@ function CombinedCalculator({ sellers, customers, products }) {
         setLoading(true);
 
         try {
-            const res = await fetch("/api/v1/shipping-charge/calculate", {
+            const res = await fetch(`${API_BASE_URL}/api/v1/shipping-charge/calculate`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

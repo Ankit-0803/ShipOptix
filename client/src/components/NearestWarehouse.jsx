@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../config";
 
 /**
  * Nearest Warehouse Form
@@ -24,7 +25,7 @@ function NearestWarehouse({ sellers, products }) {
 
         try {
             const res = await fetch(
-                `/api/v1/warehouse/nearest?sellerId=${sellerId}&productId=${productId}`
+                `${API_BASE_URL}/api/v1/warehouse/nearest?sellerId=${sellerId}&productId=${productId}`
             );
             const data = await res.json();
 
