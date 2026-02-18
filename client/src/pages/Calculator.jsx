@@ -15,20 +15,43 @@ function Calculator() {
     const [products, setProducts] = useState([]);
     const [warehouses, setWarehouses] = useState([]);
 
+    const [error, setError] = useState(null);
+
     // Fetch all entities on mount for dropdown population
     useEffect(() => {
         Promise.all([
-            fetch(`${API_BASE_URL}/api/v1/sellers`).then((r) => r.json()),
-            fetch(`${API_BASE_URL}/api/v1/customers`).then((r) => r.json()),
-            fetch(`${API_BASE_URL}/api/v1/products`).then((r) => r.json()),
-            fetch(`${API_BASE_URL}/api/v1/warehouses`).then((r) => r.json()),
+            fetch(`${API_BASE_URL}/api/v1/sellers`).then((r) => r.ok ? r.json() : []),
+            fetch(`${API_BASE_URL}/api/v1/customers`).then((r) => r.ok ? r.json() : []),
+            fetch(`${API_BASE_URL}/api/v1/products`).then((r) => r.ok ? r.json() : []),
+            fetch(`${API_BASE_URL}/api/v1/warehouses`).then((r) => r.ok ? r.json() : []),
         ]).then(([s, c, p, w]) => {
-            setSellers(s);
-            setCustomers(c);
-            setProducts(p);
-            setWarehouses(w);
-        }).catch(console.error);
+            if (Array.isArray(s)) setSellers(s);
+            if (Array.isArray(c)) setCustomers(c);
+            if (Array.isArray(p)) setProducts(p);
+            if (Array.isArray(w)) setWarehouses(w);
+
+            if (!Array.isArray(s) || s.length === 0) {
+                setError("No data received from API. Please check your Render backend logs and Ensure database migrations were run.");
+            }
+        }).catch((err) => {
+            console.error(err);
+            setError("Connection failed. Ensure VITE_API_URL is correct in Vercel settings.");
+        });
     }, []);
+
+    if (error) {
+        return (
+            <div className="calculator-page">
+                <div className="error-msg" style={{ margin: "2rem 0", padding: "1.5rem" }}>
+                    <h3>⚠️ API Error</h3>
+                    <p>{error}</p>
+                    <p style={{ marginTop: "1rem", fontSize: "0.9rem", opacity: 0.8 }}>
+                        Backend URL: <code>{API_BASE_URL || "Relative (Local Proxy)"}</code>
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="calculator-page">

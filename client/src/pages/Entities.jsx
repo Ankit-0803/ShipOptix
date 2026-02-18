@@ -12,22 +12,45 @@ function Entities() {
     const [warehouses, setWarehouses] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const [error, setError] = useState(null);
+
     useEffect(() => {
         Promise.all([
-            fetch(`${API_BASE_URL}/api/v1/customers`).then((r) => r.json()),
-            fetch(`${API_BASE_URL}/api/v1/sellers`).then((r) => r.json()),
-            fetch(`${API_BASE_URL}/api/v1/products`).then((r) => r.json()),
-            fetch(`${API_BASE_URL}/api/v1/warehouses`).then((r) => r.json()),
+            fetch(`${API_BASE_URL}/api/v1/customers`).then((r) => r.ok ? r.json() : []),
+            fetch(`${API_BASE_URL}/api/v1/sellers`).then((r) => r.ok ? r.json() : []),
+            fetch(`${API_BASE_URL}/api/v1/products`).then((r) => r.ok ? r.json() : []),
+            fetch(`${API_BASE_URL}/api/v1/warehouses`).then((r) => r.ok ? r.json() : []),
         ])
             .then(([c, s, p, w]) => {
-                setCustomers(c);
-                setSellers(s);
-                setProducts(p);
-                setWarehouses(w);
+                if (Array.isArray(c)) setCustomers(c);
+                if (Array.isArray(s)) setSellers(s);
+                if (Array.isArray(p)) setProducts(p);
+                if (Array.isArray(w)) setWarehouses(w);
+
+                if (!Array.isArray(c) || c.length === 0) {
+                    setError("Database appears empty or API is unreachable.");
+                }
             })
-            .catch(console.error)
+            .catch((err) => {
+                console.error(err);
+                setError("Network error: Failed to connect to the backend.");
+            })
             .finally(() => setLoading(false));
     }, []);
+
+    if (error && !loading) {
+        return (
+            <div className="entities-page" style={{ padding: "2rem" }}>
+                <div className="error-msg">
+                    <h3>⚠️ Connection Issue</h3>
+                    <p>{error}</p>
+                    <p style={{ marginTop: "1rem", fontSize: "0.9rem" }}>
+                        Check if <code>{API_BASE_URL}</code> is alive.
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     if (loading) {
         return (
